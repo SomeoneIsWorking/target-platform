@@ -42,6 +42,16 @@
         "all": ["-DCMAKE_POSITION_INDEPENDENT_CODE=ON", "-DBUILD_SHARED_LIBS=OFF", "-DFT_DISABLE_BZIP2=ON",
                 "-DFT_DISABLE_BROTLI=ON", "-DFT_DISABLE_HARFBUZZ=ON", "-DFT_DISABLE_PNG=ON", "-DFT_DISABLE_ZLIB=ON"]
       }
+    },
+    {
+      "name": "SDL3_ttf",
+      "url": "https://github.com/libsdl-org/SDL_ttf/releases/download/release-3.2.2/SDL3_ttf-3.2.2.tar.gz",
+      "sha256": "63547d58d0185c833213885b635a2c0548201cc8f301e6587c0be1a67e1e045d",
+      "platforms": ["windows"],
+      "options": {
+        "all": ["-DSDLTTF_VENDORED=OFF", "-DSDLTTF_HARFBUZZ=OFF", "-DSDLTTF_PLUTOSVG=OFF", "-DSDLTTF_SAMPLES=OFF"],
+        "windows": ["-DBUILD_SHARED_LIBS=OFF"]
+      }
     }
   ]
 }
