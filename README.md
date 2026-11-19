@@ -8,6 +8,7 @@ for the Mac's own architecture, Android arm64-v8a with the pinned NDK and `andro
 |---|---|
 | `target_platform/provision.py` | the toolchain pins, the dependency root, keyed library prefixes, the CMake definitions |
 | `target_platform/libraries.py` | building `libraries.json`'s pinned, checksummed sources into a prefix (stdlib only, so a container image can run it alone) |
+| `target_platform/windows_imports.py` | `audit(executable, toolchain)`: the DLLs a Windows executable imports, refused unless Windows ships them all (`SYSTEM_DLLS`, the Universal CRT) |
 | `target_platform/libraries.json` | the library pins: url, sha256, platforms, CMake options |
 | `cmake/toolchains/llvm-mingw-x86_64.cmake` | the Windows toolchain file |
 
