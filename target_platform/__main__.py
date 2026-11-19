@@ -1,11 +1,15 @@
 """Provision a release platform's toolchain and pinned libraries and print the CMake definitions that use them.
 
     python -m target_platform provision windows|macos|android [--root DIR] [--library NAME...]
+    python -m target_platform audit-windows EXECUTABLE... [--root DIR]
 
 Prints one definition per line (the toolchain file, LLVM_MINGW_ROOT, the library prefix), ready to pass to a
 CMake configure. A missing toolchain or library prefix is downloaded (checksummed) and built first; a later
 call with the same pins only prints. The root defaults to TARGET_PLATFORM_DEPENDENCY_ROOT, else
 <cache>/target-platform/deps.
+
+audit-windows prints each executable's imported DLLs, one per line, and refuses (exit 2) one that imports a
+DLL Windows does not ship.
 """
 
 from __future__ import annotations
@@ -16,7 +20,7 @@ import sys
 from collections.abc import Sequence
 from pathlib import Path
 
-from target_platform import provision
+from target_platform import provision, windows_imports
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -28,11 +32,20 @@ def main(argv: Sequence[str] | None = None) -> int:
                                                    "or the user cache)")
     provide.add_argument("--library", action="append",
                          help="build only this pinned library (repeatable; default: every one for the platform)")
+    audit = commands.add_parser("audit-windows", help="print the DLLs Windows executables import; refuse a foreign one")
+    audit.add_argument("executables", nargs="+", type=Path)
+    audit.add_argument("--root", type=Path, help="dependency root (default: TARGET_PLATFORM_DEPENDENCY_ROOT "
+                                                 "or the user cache)")
     args = parser.parse_args(argv)
     root = args.root or provision.dependency_root(os.environ, "target-platform")
     try:
+        if args.command == "audit-windows":
+            toolchain = provision.llvm_mingw(root.resolve())
+            for executable in args.executables:
+                print("\n".join(f"{executable.name}: {name}" for name in windows_imports.audit(executable, toolchain)))
+            return 0
         result = provision.provision(args.platform, root.resolve(), os.environ, args.library)
-    except provision.ToolError as error:
+    except (provision.ToolError, windows_imports.ForeignImport) as error:
         print(f"[target-platform] REFUSED: {error}", file=sys.stderr)
         return 2
     print("\n".join(result.definitions))
