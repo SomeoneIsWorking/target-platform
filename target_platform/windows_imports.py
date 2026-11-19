@@ -13,7 +13,7 @@ SYSTEM_DLLS = frozenset({"advapi32.dll", "gdi32.dll", "imm32.dll", "kernel32.dll
                          "setupapi.dll", "shell32.dll", "user32.dll", "version.dll", "winmm.dll", "ws2_32.dll",
                          "bcrypt.dll", "comdlg32.dll", "dwmapi.dll", "hid.dll", "ntdll.dll", "shlwapi.dll",
                          "uxtheme.dll", "dbghelp.dll", "cfgmgr32.dll", "dinput8.dll", "xinput1_4.dll",
-                         "crypt32.dll", "iphlpapi.dll"})
+                         "crypt32.dll", "iphlpapi.dll", "avrt.dll"})
 UNIVERSAL_CRT = re.compile(r"^api-ms-win-crt-[a-z]+-l1-1-0\.dll$")
 DLL_NAME = re.compile(r"^\s*DLL Name: (\S+)\s*$", re.MULTILINE)
 
