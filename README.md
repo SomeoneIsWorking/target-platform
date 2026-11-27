@@ -1,8 +1,10 @@
 # target-platform
 
 Pinned toolchains and target libraries for building a product on its release platforms from a Linux host:
-Windows x86-64 with [llvm-mingw](https://github.com/mstorsjo/llvm-mingw) (Clang, libc++, UCRT, static), macOS
-for the Mac's own architecture, Android arm64-v8a with the pinned NDK and `android-port`'s native prefix.
+Linux for the host's own architecture with the host's compiler, Windows x86-64 with
+[llvm-mingw](https://github.com/mstorsjo/llvm-mingw) (Clang, libc++, UCRT, static), macOS for the Mac's own
+architecture, Android arm64-v8a with the pinned NDK and `android-port`'s native prefix. SDL's Linux build leaves out
+the XScreenSaver extension: SDL inhibits the screensaver over D-Bus first.
 
 | file | owns |
 |---|---|

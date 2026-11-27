@@ -43,7 +43,7 @@ ANDROID_ABI = "arm64-v8a"
 # SDL_GPU draws through Vulkan, which Android has from 7.0 (API 24).
 ANDROID_API = 24
 ANDROID_PORT_REPOSITORY = "https://github.com/SomeoneIsWorking/android-port.git"
-PLATFORMS = ("windows", "macos", "android")
+PLATFORMS = ("linux", "windows", "macos", "android")
 
 
 class ToolError(Exception):
@@ -111,7 +111,10 @@ def moltenvk(root: Path) -> Path:
 
 
 def architecture(platform: str) -> str:
-    """The CPU a platform build targets: x86-64 for Windows, the building Mac's own for macOS, arm64 for Android."""
+    """The CPU a platform build targets: x86-64 for Windows, the building machine's own for Linux and macOS, arm64 for
+    Android."""
+    if platform == "linux":
+        return host_platform.machine()
     if platform == "macos":
         return "arm64" if host_platform.machine() == "arm64" else "x86_64"
     if platform == "android":
@@ -171,6 +174,9 @@ def provision(platform: str, root: Path, environment: Mapping[str, str],
         toolchain = llvm_mingw(root)
         library_arguments = [f"-DCMAKE_TOOLCHAIN_FILE={WINDOWS_TOOLCHAIN_FILE}", f"-DLLVM_MINGW_ROOT={toolchain}"]
         shaping = (LLVM_MINGW_NAME.encode(), WINDOWS_TOOLCHAIN_FILE.read_bytes())
+    elif platform == "linux":
+        library_arguments = []
+        shaping = (architecture(platform).encode(),)
     else:
         arch = architecture(platform)
         library_arguments = [f"-DCMAKE_OSX_DEPLOYMENT_TARGET={MACOS_DEPLOYMENT_TARGET}", f"-DCMAKE_OSX_ARCHITECTURES={arch}"]
@@ -187,7 +193,7 @@ def provision(platform: str, root: Path, environment: Mapping[str, str],
             (libraries / "complete").touch()
     except target_libraries.Refused as error:
         raise ToolError(f"{platform} target dependencies: {error}") from error
-    # Lets a consumer's macOS host configure tell the pinned SDL3 from another one.
+    # Lets a consumer's desktop host configure tell the pinned SDL3 from another one.
     stamp = prefix / PINNED_PREFIX_STAMP
     if not stamp.is_file():
         stamp.write_bytes(target_libraries.PINS.read_bytes())
