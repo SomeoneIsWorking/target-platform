@@ -10,8 +10,8 @@
     },
     {
       "name": "SDL3",
-      "url": "https://github.com/SomeoneIsWorking/SDL/archive/4a6410279206a45d1e28caefd91bb9961a5fde74.tar.gz",
-      "sha256": "f8c681b250d17f81540eac1dc08d8a8d0d4b0d038cd13fb914db9cb93be8d56f",
+      "url": "https://github.com/SomeoneIsWorking/SDL/archive/1c4801766e571152e0445148b822ed39e2ef0bf2.tar.gz",
+      "sha256": "5fd9d6df98ed5e14f1f4635279dee0a02a05972d3ff9cb8ef50a91d04c24b655",
       "platforms": ["linux", "windows", "macos"],
       "options": {
         "all": ["-DSDL_TESTS=OFF", "-DSDL_EXAMPLES=OFF"],
